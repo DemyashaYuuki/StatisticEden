@@ -9,10 +9,10 @@ import com.artemis.the.gr8.playerstats.core.statistic.PlayerStatRequest;
 import com.artemis.the.gr8.playerstats.core.statistic.TopStatRequest;
 import com.artemis.the.gr8.playerstats.core.utils.EnumHandler;
 import com.artemis.the.gr8.playerstats.core.utils.OfflinePlayerHandler;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import net.skinsrestorer.api.property.SkinProperty;
 import org.bukkit.Bukkit;
@@ -32,6 +32,7 @@ import org.bukkit.profile.PlayerProfile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -234,10 +235,10 @@ public final class StatsGuiManager {
 
         Player onlinePlayer = Bukkit.getPlayerExact(playerName);
         if (onlinePlayer != null) {
-            meta.setPlayerProfile(onlinePlayer.getPlayerProfile());
+            meta.setOwnerProfile(onlinePlayer.getPlayerProfile());
         } else {
-            applySkinRestorerProfile(meta, offlinePlayer);
-            if (meta.getPlayerProfile() == null) {
+            boolean applied = applySkinRestorerProfile(meta, offlinePlayer);
+            if (!applied) {
                 meta.setOwningPlayer(offlinePlayer);
             }
         }
@@ -251,7 +252,7 @@ public final class StatsGuiManager {
         return head;
     }
 
-    private void applySkinRestorerProfile(@NotNull SkullMeta meta, @NotNull OfflinePlayer offlinePlayer) {
+    private boolean applySkinRestorerProfile(@NotNull SkullMeta meta, @NotNull OfflinePlayer offlinePlayer) {
         if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer") || offlinePlayer.getName() == null) {
             return;
         }
@@ -265,10 +266,13 @@ public final class StatsGuiManager {
 
             PlayerProfile profile = Bukkit.createPlayerProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
             SkinProperty skinProperty = property.get();
-            profile.setProperty(new ProfileProperty("textures", skinProperty.getValue(), skinProperty.getSignature()));
-            meta.setPlayerProfile(profile);
+            String textureUrl = PropertyUtils.getSkinTextureUrl(skinProperty);
+            profile.getTextures().setSkin(new URL(textureUrl));
+            meta.setOwnerProfile(profile);
+            return true;
         } catch (Throwable ignored) {
             // graceful fallback to the normal owning-player head
+            return;
         }
     }
 

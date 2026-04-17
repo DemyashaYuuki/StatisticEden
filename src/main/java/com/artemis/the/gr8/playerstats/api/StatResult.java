@@ -1,6 +1,5 @@
 package com.artemis.the.gr8.playerstats.api;
 
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.TextComponent;
 
 /**
@@ -27,10 +26,8 @@ import net.kyori.adventure.text.TextComponent;
  * <p>
  * By default, the resulting message is a {@link TextComponent}, which can be
  * sent directly to a Minecraft client or console with the Adventure library.
- * To send a Component, you need to get a {@link BukkitAudiences} object,
- * and use that to send the desired Component. Information on how to get
- * and use the BukkitAudiences object can be found on
- * <a href="https://docs.adventure.kyori.net/platform/bukkit.html">Adventure's website</a>.
+ * On modern Paper and Purpur builds, you can send this Component directly with
+ * <code>CommandSender#sendMessage(Component)</code> or <code>Player#sendMessage(Component)</code>.
  *
  * <p>You can also use the provided {@link #formattedString()} method to get the
  * same information in String-format. Don't use Adventure's <code>#content()</code>

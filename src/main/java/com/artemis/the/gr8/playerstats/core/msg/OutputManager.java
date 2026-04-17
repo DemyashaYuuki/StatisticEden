@@ -9,7 +9,6 @@ import com.artemis.the.gr8.playerstats.core.msg.msgutils.FormattingFunction;
 import com.artemis.the.gr8.playerstats.api.StatRequest;
 import com.artemis.the.gr8.playerstats.core.utils.Closable;
 import com.artemis.the.gr8.playerstats.core.utils.Reloadable;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -35,7 +34,6 @@ import static com.artemis.the.gr8.playerstats.core.enums.StandardMessage.*;
 public final class OutputManager implements Reloadable, Closable {
 
     private static volatile OutputManager instance;
-    private static BukkitAudiences adventure;
     private static EnumMap<StandardMessage, Function<MessageBuilder, TextComponent>> standardMessages;
 
     private final ConfigHandler config;
@@ -43,7 +41,6 @@ public final class OutputManager implements Reloadable, Closable {
     private MessageBuilder consoleMessageBuilder;
 
     private OutputManager() {
-        adventure = BukkitAudiences.create(Main.getPluginInstance());
         config = ConfigHandler.getInstance();
 
         getMessageBuilders();
@@ -74,10 +71,6 @@ public final class OutputManager implements Reloadable, Closable {
 
     @Override
     public void close() {
-        if (adventure != null) {
-            adventure.close();
-            adventure = null;
-        }
     }
 
     public StatTextFormatter getMainMessageBuilder() {
@@ -120,18 +113,18 @@ public final class OutputManager implements Reloadable, Closable {
 
     public void sendFeedbackMsg(@NotNull CommandSender sender, StandardMessage message) {
         if (message != null) {
-            adventure.sender(sender).sendMessage(standardMessages.get(message)
+            sender.sendMessage(standardMessages.get(message)
                     .apply(getMessageBuilder(sender)));
         }
     }
 
     public void sendFeedbackMsgPlayerExcluded(@NotNull CommandSender sender, String playerName) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .excludeSuccess(playerName));
     }
 
     public void sendFeedbackMsgPlayerIncluded(@NotNull CommandSender sender, String playerName) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .includeSuccess(playerName));
     }
 
@@ -144,37 +137,37 @@ public final class OutputManager implements Reloadable, Closable {
         if (subStatName == null) {
             sendFeedbackMsgMissingSubStat(sender, statType);
         } else {
-            adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+            sender.sendMessage(getMessageBuilder(sender)
                     .wrongSubStatType(statType, subStatName));
         }
     }
 
     public void sendExamples(@NotNull CommandSender sender) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .usageExamples());
     }
 
     public void sendHelp(@NotNull CommandSender sender) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .helpMsg());
     }
 
     public void sendExcludeInfo(@NotNull CommandSender sender) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .excludeInfoMsg());
     }
 
     public void sendExcludedList(@NotNull CommandSender sender, ArrayList<String> excludedPlayerNames) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .excludedList(excludedPlayerNames));
     }
 
     public void sendToAllPlayers(@NotNull TextComponent component) {
-        adventure.players().sendMessage(component);
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(component));
     }
 
     public void sendToCommandSender(@NotNull CommandSender sender, @NotNull TextComponent component) {
-        adventure.sender(sender).sendMessage(component);
+        sender.sendMessage(component);
     }
 
     private MessageBuilder getMessageBuilder(CommandSender sender) {
