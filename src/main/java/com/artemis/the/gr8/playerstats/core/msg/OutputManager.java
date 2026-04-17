@@ -129,7 +129,7 @@ public final class OutputManager implements Reloadable, Closable {
     }
 
     public void sendFeedbackMsgMissingSubStat(@NotNull CommandSender sender, String statType) {
-        adventure.sender(sender).sendMessage(getMessageBuilder(sender)
+        sender.sendMessage(getMessageBuilder(sender)
                 .missingSubStatName(statType));
     }
 

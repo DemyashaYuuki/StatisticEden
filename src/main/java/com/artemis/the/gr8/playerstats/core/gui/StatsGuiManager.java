@@ -74,11 +74,11 @@ public final class StatsGuiManager {
 
     public void handleInventoryClick(@NotNull InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) {
-            return;
+            return false;
         }
         Inventory topInventory = event.getView().getTopInventory();
         if (!(topInventory.getHolder() instanceof Menu menu)) {
-            return;
+            return false;
         }
 
         event.setCancelled(true);
@@ -254,14 +254,14 @@ public final class StatsGuiManager {
 
     private boolean applySkinRestorerProfile(@NotNull SkullMeta meta, @NotNull OfflinePlayer offlinePlayer) {
         if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer") || offlinePlayer.getName() == null) {
-            return;
+            return false;
         }
         try {
             Optional<SkinProperty> property = SkinsRestorerProvider.get()
                     .getPlayerStorage()
                     .getSkinOfPlayer(offlinePlayer.getUniqueId());
             if (property.isEmpty()) {
-                return;
+                return false;
             }
 
             PlayerProfile profile = Bukkit.createPlayerProfile(offlinePlayer.getUniqueId(), offlinePlayer.getName());
@@ -272,7 +272,7 @@ public final class StatsGuiManager {
             return true;
         } catch (Throwable ignored) {
             // graceful fallback to the normal owning-player head
-            return;
+            return false;
         }
     }
 
