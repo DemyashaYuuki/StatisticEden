@@ -74,11 +74,11 @@ public final class StatsGuiManager {
 
     public void handleInventoryClick(@NotNull InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) {
-            return false;
+            return;
         }
         Inventory topInventory = event.getView().getTopInventory();
         if (!(topInventory.getHolder() instanceof Menu menu)) {
-            return false;
+            return;
         }
 
         event.setCancelled(true);
