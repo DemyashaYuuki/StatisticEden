@@ -1,0 +1,52 @@
+main: com.artemis.the.gr8.playerstats.core.Main
+name: PlayerStats
+version: 2.7-gui
+api-version: '1.21'
+folia-supported: true
+description: adds chat and GUI commands to view player statistics
+author: Artemis_the_gr8
+softdepend:
+  - PlaceholderAPI
+  - SkinsRestorer
+commands:
+  statistic:
+    aliases:
+      - stat
+      - stats
+    description: show player statistics in private chat
+    usage: "§6/stat - открыть GUI, §6/stat help - помощь"
+    permission: playerstats.stat
+  statisticshare:
+    aliases:
+      - statshare
+      - statsshare
+    description: share last stat lookup in chat
+    usage: "§6Нажмите кнопку share в результате /stat"
+    permission: playerstats.share
+  statisticreload:
+    aliases:
+      - statreload
+      - statsreload
+    description: reloads the config
+    usage: "§6/statreload"
+    permission: playerstats.reload
+  statisticexclude:
+    aliases:
+      - statexclude
+      - statsexclude
+    description: hide this player's statistics from /stat results
+    usage: "§6/statexclude info"
+    permission: playerstats.exclude
+permissions:
+  playerstats.stat:
+    description: allows usage of /statistic
+    default: true
+  playerstats.share:
+    description: allows sharing stats in chat
+    default: true
+  playerstats.exclude:
+    description: allows usage of /statexclude
+    default: op
+  playerstats.reload:
+    description: allows usage of /statreload
+    default: op
