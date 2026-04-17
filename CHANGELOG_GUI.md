@@ -24,3 +24,8 @@
 ## Compatibility notes
 - Original text command syntax is kept
 - GUI uses the existing stat request engine, so chat output formatting and sharing continue to work
+
+## Build fix
+
+- Removed the dead external `com.tchristofferson:ConfigUpdater:2.0-SNAPSHOT` dependency.
+- Embedded a local compatible `ConfigUpdater` implementation so CI and local Maven builds do not depend on an unavailable snapshot.
